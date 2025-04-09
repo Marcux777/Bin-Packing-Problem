@@ -1,5 +1,3 @@
-# Este arquivo foi movido para utils/file_utils.py para organizar os utilitários em um pacote separado.
-
 import os
 
 def list_directory_files(directory):

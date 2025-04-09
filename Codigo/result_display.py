@@ -1,3 +1,5 @@
+from models.container import Container
+
 def display_solution(arquivo, solution, execution_time):
     """
     Exibe os resultados da solução de uma instância do problema.

@@ -1,5 +1,3 @@
-# utils/data_processor.py
-
 def create_data(arquivo):
     """
     Processa um arquivo de instância e extrai os dados necessários.

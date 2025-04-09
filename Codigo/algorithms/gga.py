@@ -1,11 +1,10 @@
 import random
-from copy import deepcopy
-from algorithms.Container import Container
-from algorithms.Tabu_Search import Tabu_Search
-#import optuna
 import numpy as np
-import bisect
+from copy import deepcopy
 from collections import Counter
+import bisect
+from models.container import Container
+from algorithms.tabu_search import Tabu_Search
 
 
 class GGA:
@@ -680,41 +679,3 @@ class GGA:
             # Se o elemento estiver em swapped_elements, ele precisa ser corrigido
             while child_elements[i] in swapped_elements:
                 child_elements[i] = mapping[child_elements[i]]
-
-# Função para otimização dos hiperparametross
-# def call_optuna(self):
-
-
-"""
-def objective(trial):
-    # Hiperparâmetros a serem otimizados
-    hyperparameters = {
-        'num_generations': trial.suggest_int('num_generations', 50, 200),
-        'population_size': trial.suggest_int('population_size', 10, 100),
-        'mutation_rate': trial.suggest_float('mutation_rate', 0.01, 0.5),
-        'elite_rating': trial.suggest_float('elite_rating', 0.01, 0.5),
-        'tabu_max_iterations': trial.suggest_int('tabu_max_iterations', 10, 100),
-        'tabu_tenure': trial.suggest_int('tabu_tenure', 1, 20),
-        'tabu_max_neighbors': trial.suggest_int('tabu_max_neighbors', 5, 50),
-        'weights': [random.randint(1, 100) for _ in range(50)],
-        'bin_capacity': 150
-    }
-
-    # Inicializar e executar o GGA
-    gga = GGA(hyperparameters)
-
-    best_solution = gga.run()
-    best_fitness = gga.fitness(best_solution)
-
-    # O Optuna minimiza por padrão, então fitness negativo pode ser necessário se maior for melhor
-    return best_fitness
-
-
-# Alterar para "maximize" se necessário
-study = optuna.create_study(direction="minimize")
-study.optimize(objective, n_trials=50)
-
-# Exibir os melhores hiperparâmetros
-print("Melhores hiperparâmetros encontrados:", study.best_params)
-# return study.best_params
-"""

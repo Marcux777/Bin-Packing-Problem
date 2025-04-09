@@ -1,9 +1,37 @@
-from concurrent.futures import ProcessPoolExecutor, as_completed
-from gga_processor import process_instance
+import sys
 import os
+
+# Adicionar o diretório atual ao sys.path para que o Python encontre os módulos
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+from concurrent.futures import ProcessPoolExecutor, as_completed
+from models.container import Container
+from algorithms.gga import GGA
+from algorithms.tabu_search import Tabu_Search
+from utils.data_processor import create_data
+from utils.file_utils import list_directory_files, get_valid_files
 import argparse
 from result_display import display_solution
-from file_utils import list_directory_files, get_valid_files
+
+def process_instance(arquivo):
+    """
+    Processa uma instância do problema do bin packing usando o GGA.
+
+    Args:
+        arquivo (str): O nome do arquivo de instância a ser processado.
+
+    Returns:
+        tuple: Uma tupla contendo o nome do arquivo, a melhor solução encontrada e o tempo de execução.
+    """
+    import time
+    start_time = time.time()
+
+    data = create_data(arquivo)
+    gga = GGA(data)
+    best_solution = gga.run()
+
+    execute_time = time.time() - start_time
+    return arquivo, best_solution, execute_time
 
 def main():
     # Configurar argumentos de linha de comando

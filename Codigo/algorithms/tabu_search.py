@@ -1,5 +1,3 @@
-# Este arquivo foi movido para o diretório algorithms/tabu_search.py para organizar os algoritmos em um pacote separado.
-
 import random
 from collections import deque
 
