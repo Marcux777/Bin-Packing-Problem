@@ -1,62 +1,37 @@
-from GGA import GGA
-import time as t
 from concurrent.futures import ProcessPoolExecutor, as_completed
-
-
-def create_data(Arquivo):
-    caminho = f"/workspaces/Heuristicas/Bin Packing Problem/Instances/{Arquivo}"
-    with open(caminho, "r") as file:
-        # Filtrar apenas as linhas não vazias que iniciam com dígitos ou sinal negativo
-        linhas = [linha.strip() for linha in file.readlines() if linha.strip() and (linha.strip()[0].isdigit() or linha.strip()[0] == '-')]
-
-    # Primeira linha: número de itens (m)
-    m = int(linhas[0])
-
-    # Segunda linha: dimensões do contêiner/bin (W H)
-    bin_info = linhas[1].split()
-    bin_width, bin_height = int(bin_info[0]), int(bin_info[1])
-
-    # Define a capacidade do bin: se H for -1, utiliza apenas W; caso contrário, W * H
-    if bin_height == -1:
-        bin_capacity = bin_width
-    else:
-        bin_capacity = bin_width * bin_height
-
-    # Das linhas restantes, extraímos somente o peso do item (w_i)
-    weights = []
-    for linha in linhas[2:]:
-        dados = linha.split()
-        if len(dados) >= 6:
-            # dados: item_id, w_i, h_i, d_i, b_i, p_i
-            w_i = int(dados[1])
-            weights.append(w_i)
-
-    data = {
-        "num_items": m,
-        "bin_width": bin_width,
-        "bin_height": bin_height,
-        "bin_capacity": bin_capacity,
-        "weights": weights
-    }
-    return data
-
-def process_instance(Arquivo):
-    start_time = t.time()
-    data = create_data(Arquivo)
-    gga = GGA(data)
-    best_solution = gga.run()
-    end_time = t.time()
-    # Retornar também o nome do arquivo
-    return Arquivo, best_solution, end_time - start_time
-
+from gga_processor import process_instance
+import os
 
 def main():
+    # Pasta base de instâncias
+    instances_dir = "/workspaces/Bin-Paking-Problem/Instances"
+
+    # Lista de instâncias para processar
     arquivos = [
         "CLASS/cl_01_040_07.ins2D", "CLASS/cl_01_040_08.ins2D", "CLASS/cl_01_040_09.ins2D",
     ]
 
+    # Verificar se os arquivos existem
+    valid_files = []
+    for arquivo in arquivos:
+        full_path = os.path.join(instances_dir, arquivo)
+        if os.path.exists(full_path):
+            valid_files.append(arquivo)
+        else:
+            print(f"Aviso: O arquivo {full_path} não existe.")
+
+    if not valid_files:
+        print("Nenhum arquivo válido encontrado. Verifique o diretório de instâncias.")
+        return
+
+    # Listar os arquivos disponíveis no diretório (para ajudar o usuário)
+    print("\nArquivos disponíveis na pasta de instâncias:")
+    list_directory_files(instances_dir)
+
+    print(f"\nProcessando {len(valid_files)} arquivos válidos...\n")
+
     with ProcessPoolExecutor() as executor:
-        future_to_file = {executor.submit(process_instance, arquivo): arquivo for arquivo in arquivos}
+        future_to_file = {executor.submit(process_instance, arquivo): arquivo for arquivo in valid_files}
 
         for future in as_completed(future_to_file):
             arquivo = future_to_file[future]
@@ -73,6 +48,19 @@ def main():
                 print("=" * 100)
             except Exception as exc:
                 print(f"{arquivo} gerou uma exceção: {exc}")
+
+def list_directory_files(directory):
+    """Lista os arquivos em um diretório e seus subdiretórios."""
+    try:
+        for root, dirs, files in os.walk(directory):
+            if files:
+                rel_path = os.path.relpath(root, directory)
+                if rel_path == ".":
+                    print(f"  - Pasta raiz: {', '.join(files)}")
+                else:
+                    print(f"  - {rel_path}: {', '.join(files)}")
+    except Exception as e:
+        print(f"Erro ao listar diretório: {e}")
 
 if __name__ == "__main__":
     main()

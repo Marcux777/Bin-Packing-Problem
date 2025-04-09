@@ -4,7 +4,7 @@
 
 # Requisitos
 
-- python 3.12.6
+- python 3.12
 - numpy 2.1.1
 
 
@@ -374,9 +374,9 @@ As implementações bem-sucedidas de GGA híbrido incluem:
 ### 2.3.4. Considerações dos Parâmetros
 
 - **Ajuste de Parâmetros**: Para o ajuste dos parâmetros da GGA, foi-se usada otimização Bayesiana, utilizando a biblioteca `Optuna` . Utilizando algumas instâncias do problema para achar valores interessantes para os parâmetros iniciais da GGA.
-    
+
     Também colocamos como opcional, ao passar um dicionário com os parâmetros, assim, podendo ao usuário poder ajustar como quiser.
-    
+
 
 ## 2.4. Tabu Search
 
@@ -405,115 +405,115 @@ Início
     Solução_Inicial ← Solução fornecida pelo GGA
     Melhor_Solução ← Solução_Inicial
     Melhor_Aptidão ← Avaliar_Aptidão(Melhor_Solução)
-    
+
     Iteração ← 0
     Tabu_List ← Fila de tamanho máximo (Tabu_Tenure)
     Tabu_Set ← Conjunto vazio
-    
+
     // Enquanto o número de iterações for menor que Max_Iterações
     Enquanto Iteração < Max_Iterações faça
-    
+
         Vizinho_Encontrado ← Falso
-    
+
         // Gerar vizinhança para a solução atual
         Vizinhos ← Gerar_Vizinhança(Solução_Atual)
-    
+
         Para cada (Vizinho, Movimento, Aptidão) em Vizinhos faça
-    
+
             // Se o movimento não está na Tabu_Set ou é melhor que a melhor aptidão
             Se Movimento não está em Tabu_Set ou Aptidão < Melhor_Aptidão então
-    
+
                 // Atualizar Tabu_List e Tabu_Set
                 Adicionar Tabu_List(Movimento)
                 Adicionar Tabu_Set(Movimento)
-    
+
                 Se o tamanho de Tabu_List > Tabu_Tenure então
                     Remover Movimento_Mais_Antigo de Tabu_List e Tabu_Set
                 FimSe
-    
+
                 // Atualizar solução atual
                 Solução_Atual ← Vizinho
-    
+
                 // Atualizar a melhor solução se o vizinho for melhor
                 Se Aptidão < Melhor_Aptidão então
                     Melhor_Solução ← Vizinho
                     Melhor_Aptidão ← Aptidão
                 FimSe
-    
+
                 Vizinho_Encontrado ← Verdadeiro
                 Parar // Move para a próxima iteração
-    
+
             FimSe
-    
+
         FimPara
-    
+
         // Se nenhum vizinho aceitável for encontrado, parar a busca
         Se Vizinho_Encontrado = Falso então
             Parar
         FimSe
-    
+
         Iteração ← Iteração + 1
-    
+
     FimEnquanto
-    
+
     // Retorna a melhor solução encontrada
     Retornar Melhor_Solução
     Fim
-    
+
     // Função para gerar a vizinhança da solução atual
     Função Gerar_Vizinhança(Solução_Atual)
-    
+
     Vizinhos ← Lista vazia
     Tamanho_Solução ← Tamanho da solução (número de contêineres)
-    
+
     Tentativas ← 0
     Max_Tentativas ← Max_Vizinhos * 10 // Limite para evitar loops
-    
+
     Enquanto tamanho(Vizinhos) < Max_Vizinhos e Tentativas < Max_Tentativas faça
         Tentativas ← Tentativas + 1
-    
+
         // Escolher dois contêineres aleatórios
         (i, j) ← Escolher aleatoriamente dois índices
-    
+
         Contêiner_i ← Solução_Atual[i]
         Contêiner_j ← Solução_Atual[j]
-    
+
         // Se o contêiner_i estiver vazio, continue
         Se Contêiner_i estiver vazio então
             Continue
         FimSe
-    
+
         // Escolher um item aleatório do contêiner_i
         Item ← Escolher item aleatório de Contêiner_i
-    
+
         // Se o contêiner_j tiver espaço suficiente para o item
         Se Contêiner_j tiver espaço suficiente para o Item então
-    
+
             // Criar nova solução aplicando o movimento
             Nova_Solução ← Cópia de Solução_Atual
             Nova_Solução[i] ← Cópia de Contêiner_i
             Nova_Solução[j] ← Cópia de Contêiner_j
-    
+
             // Remover o item do contêiner_i e adicionar ao contêiner_j
             Nova_Solução[i].Remover_Item(Item)
             Nova_Solução[j].Adicionar_Item(Item)
-    
+
             // Remover contêineres vazios
             Nova_Solução ← Remover_Contêineres_Vazios(Nova_Solução)
-    
+
             // Avaliar a nova solução
             Movimento ← (Item, i, j)
             Aptidão ← Avaliar_Aptidão(Nova_Solução)
-    
+
             // Adicionar a nova solução e seu movimento à lista de vizinhos
             Adicionar (Nova_Solução, Movimento, Aptidão) à Vizinhos
-    
+
         FimSe
-    
+
     FimEnquanto
-    
+
     Retornar Vizinhos
-    
+
 FimFunção
 
 ```
@@ -542,48 +542,48 @@ Quanto ao Tabu Search, ele se destaca na exploração e refinamento de ótimos l
 Início
     // Passo 1: Ordenar os itens em ordem decrescente de tamanho
     Ordenar_Itens_Decrescente(Itens)
-    
+
     // Passo 2: Inicializar lista de contêineres vazios
     Contêineres ← Lista vazia
-    
+
     // Passo 3: Para cada item, tentar colocá-lo no melhor contêiner disponível
     Para cada Item em Itens faça
-    
+
         Melhor_Contêiner ← NULL
         Melhor_Espaço_Restante ← Infinito
-    
+
         // Passo 4: Verificar cada contêiner existente
         Para cada Contêiner em Contêineres faça
-    
+
             Espaço_Restante ← Contêiner.Espaço_Restante()
-    
+
             // Passo 5: Se o contêiner pode acomodar o item
             Se Espaço_Restante >= Tamanho do Item então
-    
+
                 // Verificar se este contêiner é o melhor (menor espaço restante)
                 Se Espaço_Restante < Melhor_Espaço_Restante então
                     Melhor_Contêiner ← Contêiner
                     Melhor_Espaço_Restante ← Espaço_Restante
                 FimSe
-    
+
             FimSe
-    
+
         FimPara
-    
+
         // Passo 6: Se foi encontrado um contêiner adequado, adicionar o item
         Se Melhor_Contêiner ≠ NULL então
             Melhor_Contêiner.Adicionar_Elemento(Item)
-    
+
         // Caso contrário, criar um novo contêiner e adicionar o item
         Senão
             Novo_Contêiner ← Criar novo Contêiner com capacidade máxima
             Novo_Contêiner.Adicionar_Elemento(Item)
             Adicionar Novo_Contêiner à lista de Contêineres
-    
+
         FimSe
-    
+
     FimPara
-    
+
     // Passo 7: Retornar a lista de contêineres utilizados
     Retornar Contêineres
 Fim
