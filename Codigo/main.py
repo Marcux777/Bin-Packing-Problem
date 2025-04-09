@@ -23,9 +23,12 @@ def main():
 
     # Lista de instâncias para processar
     arquivos = args.files if args.files else [
-        "CLASS/cl_01_040_07.ins2D",
-        "CLASS/cl_01_040_08.ins2D",
-        "CLASS/cl_01_040_09.ins2D",
+        "Scholl/Scholl_3/HARD0.txt",
+        "Scholl/Scholl_3/HARD1.txt",
+        "Scholl/Scholl_3/HARD2.txt",
+        "Scholl/Scholl_3/HARD3.txt",
+        "Scholl/Scholl_3/HARD4.txt",
+        "Scholl/Scholl_3/HARD5.txt",
     ]
 
     # Verificar se os arquivos existem
@@ -47,6 +50,8 @@ def main():
             try:
                 arquivo, best_solution, execute_time = future.result()
                 display_solution(arquivo, best_solution, execute_time)
+            except ZeroDivisionError as zde:
+                print(f"{arquivo} gerou uma exceção de divisão por zero: {zde}")
             except Exception as exc:
                 print(f"{arquivo} gerou uma exceção: {exc}")
 
