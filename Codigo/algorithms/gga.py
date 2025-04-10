@@ -5,41 +5,50 @@ from collections import Counter
 import bisect
 from models.container import Container
 from algorithms.tabu_search import Tabu_Search
+import sys
+import os
+
+# Adicionar o diretório Codigo ao path para importação do config
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from config import GGA_CONFIG, TABU_CONFIG
 
 
 class GGA:
 
     def __init__(self, elements):
         """
-        Initializes the genetic algorithm parameters for the bin packing problem.
+        Inicializa o algoritmo genético para o problema de bin packing.
 
         Args:
-            elements (dict): A dictionary containing the following keys:
-                - 'weights' (list): A list of item weights.
-                - 'bin_capacity' (int): The capacity of each bin.
-                - 'num_generations' (int): The number of generations to run the algorithm. Default is 100.
-                - 'population_size' (int): The size of the population. Default is 20.
-                - 'stagnation_limit' (int): The number of generations with no improvement before stopping. Default is 50.
-                - 'tournament_size' (int): The number of individuals to participate in tournament selection. Default is 3.
-                - 'mutation_rate' (float): The probability of mutation. Default is 0.1.
-                - 'elite_rating' (float): The percentage of the population to be considered elite. Default is 0.1.
-                - 'tabu_max_iterations' (int): Maximum number of iterations for Tabu Search. Default is 30.
-                - 'tabu_tenure' (int): Number of iterations a move remains in the tabu list. Default is 5.
-                - 'tabu_max_neighbors' (int): Maximum number of neighbors to consider in each iteration. Default is 20.
+            elements (dict): Um dicionário contendo os seguintes campos:
+                - 'weights' (list): Lista de pesos dos itens.
+                - 'bin_capacity' (int): Capacidade de cada bin.
+
+        O algoritmo utiliza os parâmetros definidos no módulo de configuração (config.py),
+        mas permite que sejam especificados valores personalizados durante a inicialização.
         """
         self.elements = elements.get('weights', [])
         self.container_capacity = elements.get('bin_capacity', 0)
-        self.num_generations = elements.get('num_generations', 142)
-        self.population_size = elements.get('population_size', 23)
-        self.stagnation_limit = elements.get('stagnation_limit', 50)
-        self.tournament_size = elements.get('tournament_size', 3)
-        self.mutation_rate = elements.get('mutation_rate', 0.15)
-        self.elite_rating = elements.get('elite_rating', 0.37)
 
-        # Parâmetros da Tabu Search
-        self.tabu_max_iterations = elements.get('tabu_max_iterations', 32)
-        self.tabu_tenure = elements.get('tabu_tenure', 2)
-        self.tabu_max_neighbors = elements.get('tabu_max_neighbors', 38)
+        # Usando os parâmetros do arquivo de configuração
+        self.num_generations = elements.get('num_generations', GGA_CONFIG['num_generations'])
+        self.population_size = elements.get('population_size', GGA_CONFIG['population_size'])
+        self.stagnation_limit = elements.get('stagnation_limit', 50)
+        self.tournament_size = elements.get('tournament_size', GGA_CONFIG['selection_tournament_size'])
+        self.mutation_rate = elements.get('mutation_rate', GGA_CONFIG['mutation_rate'])
+        self.elite_rating = elements.get('elite_rating', GGA_CONFIG['elite_size'] / GGA_CONFIG['population_size'])
+
+        # Parâmetros da Tabu Search usando a configuração
+        self.tabu_max_iterations = elements.get('tabu_max_iterations', TABU_CONFIG['max_iterations'])
+        self.tabu_tenure = elements.get('tabu_tenure', TABU_CONFIG['tabu_list_size'])
+        self.tabu_max_neighbors = elements.get('tabu_max_neighbors', TABU_CONFIG['neighborhood_size'])
+
+        # Histórico de evolução para visualização
+        self.history = {
+            'best_fitness': [],
+            'avg_fitness': [],
+            'generation': []
+        }
 
     def generate_initial_solution(self, elements=None):
         if elements is None:
@@ -571,7 +580,7 @@ class GGA:
         avaliando a aptidão (fitness) de cada indivíduo e criando novas populações
         até que a estagnação seja atingida ou o número máximo de gerações seja alcançado.
 
-        Retorna a melhor solução encontrada.
+        Armazena o histórico de desempenho para visualização posterior.
 
         Returns:
             best_solution: O indivíduo com a melhor aptidão encontrado durante a execução do algoritmo.
@@ -584,6 +593,12 @@ class GGA:
             fitnesses = [self.fitness(individual)
                          for individual in self.population]
             current_best_fitness = min(fitnesses)
+            avg_fitness = sum(fitnesses) / len(fitnesses)
+
+            # Armazenar dados para visualização
+            self.history['best_fitness'].append(current_best_fitness)
+            self.history['avg_fitness'].append(avg_fitness)
+            self.history['generation'].append(generation + 1)
 
             if current_best_fitness < best_fitness:
                 best_fitness = current_best_fitness
@@ -592,9 +607,7 @@ class GGA:
                 stagnation_counter += 1
 
             if stagnation_counter >= self.stagnation_limit:
-                print(
-                    f"Estagnação atingida na geração {generation}. Finalizando o algoritmo..."
-                )
+                print(f"Estagnação atingida na geração {generation}. Finalizando o algoritmo...")
                 break
 
             self.population = self.create_new_population(fitnesses)

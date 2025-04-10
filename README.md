@@ -6,6 +6,62 @@
 
 - python 3.12
 - numpy 2.1.1
+- matplotlib
+- seaborn
+
+# Como executar
+
+Você pode executar o programa com os seguintes comandos:
+
+```bash
+# Executar com as instâncias padrão definidas no arquivo config.py
+cd /workspaces/Bin-Paking-Problem
+python Codigo/main.py
+
+# Listar as instâncias disponíveis
+python Codigo/main.py --list
+
+# Executar com instâncias específicas
+python Codigo/main.py --files Scholl/Scholl_1/N1C1W1_A.txt Scholl/Scholl_1/N1C1W1_B.txt
+
+# Processar várias instâncias em paralelo (mais rápido em computadores com múltiplos núcleos)
+python Codigo/main.py --parallel
+
+# Executar os testes unitários
+python -m unittest tests/test_container.py
+```
+
+# Melhorias Implementadas
+
+## 1. Testes Unitários
+Foram implementados testes unitários para a classe Container, verificando:
+- Inicialização correta
+- Adição e remoção de elementos
+- Tratamento de erros ao exceder capacidade
+- Verificação de container cheio
+- Cálculo de espaço restante
+- Funcionamento da cópia de container
+
+## 2. Documentação de Código
+A documentação foi melhorada com:
+- Docstrings detalhadas para módulos
+- Documentação de parâmetros de funções
+- Explicações sobre o funcionamento dos algoritmos
+- Clarificação das estruturas de dados utilizadas
+
+## 3. Configuração Flexível
+Foi implementado um arquivo de configuração (`config.py`) centralizado que contém:
+- Parâmetros configuráveis para o algoritmo GGA
+- Parâmetros para o algoritmo Tabu Search
+- Configurações para visualização de resultados
+- Configurações gerais como diretórios e instâncias padrão
+
+## 4. Visualização de Resultados
+Foi criado um módulo de visualização completo que permite:
+- Gerar gráficos de convergência do fitness ao longo das gerações
+- Visualizar a ocupação dos bins na solução final
+- Comparar visualmente diferentes soluções
+- Salvar os gráficos em arquivos para referência futura
 
 # Sumário
 ---
@@ -635,7 +691,7 @@ Para facilitar a visualização de cada operador, vamos mostrar os testes apenas
 | **Scramble**  | **PMX**          | **Stoic Tournament Selection** | —              | —                     |
 | **Scramble**  | **PMX**          | **Tournament Selection**       | —              | —                     |
 | **Scramble**  | **PMX**          | **Roulette Wheel**             | —              | —                     |
-| ——————        | ——————           | ——————                         | ——————         | ——————                |
+| ——————| ——————           | ——————| ——————| ——————|
 | **Swap**      | **Multi-Point**  | **Stoic Tournament Selection** | 17.86 segundos | 18                    |
 | **Swap**      | **Multi-Point**  | **Tournament Selection**       | 24.87 segundos | 18                    |
 | **Swap**      | **Multi-Point**  | **Roulette Wheel**             | 53.45 segundos | 17                    |
@@ -645,7 +701,7 @@ Para facilitar a visualização de cada operador, vamos mostrar os testes apenas
 | **Swap**      | **PMX**          | **Stoic Tournament Selection** | —              | —                     |
 | **Swap**      | **PMX**          | **Tournament Selection**       | —              | —                     |
 | **Swap**      | **PMX**          | **Roulette Wheel**             | —              | —                     |
-| ——————| ——————           | ——————| ——————| ——————|
+| ——————        | ——————           | ——————                         | ——————         | ——————                |
 | **Insertion** | **Multi-Point**  | **Stoic Tournament Selection** | 30.40 segundos | 17                    |
 | **Insertion** | **Multi-Point**  | **Tournament Selection**       | 31.27 segundos | 17                    |
 | **Insertion** | **Multi-Point**  | **Roulette Wheel**             | 36.09 segundos | 18                    |
