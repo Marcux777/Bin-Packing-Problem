@@ -31,37 +31,6 @@ python Codigo/main.py --parallel
 python -m unittest tests/test_container.py
 ```
 
-# Melhorias Implementadas
-
-## 1. Testes Unitários
-Foram implementados testes unitários para a classe Container, verificando:
-- Inicialização correta
-- Adição e remoção de elementos
-- Tratamento de erros ao exceder capacidade
-- Verificação de container cheio
-- Cálculo de espaço restante
-- Funcionamento da cópia de container
-
-## 2. Documentação de Código
-A documentação foi melhorada com:
-- Docstrings detalhadas para módulos
-- Documentação de parâmetros de funções
-- Explicações sobre o funcionamento dos algoritmos
-- Clarificação das estruturas de dados utilizadas
-
-## 3. Configuração Flexível
-Foi implementado um arquivo de configuração (`config.py`) centralizado que contém:
-- Parâmetros configuráveis para o algoritmo GGA
-- Parâmetros para o algoritmo Tabu Search
-- Configurações para visualização de resultados
-- Configurações gerais como diretórios e instâncias padrão
-
-## 4. Visualização de Resultados
-Foi criado um módulo de visualização completo que permite:
-- Gerar gráficos de convergência do fitness ao longo das gerações
-- Visualizar a ocupação dos bins na solução final
-- Comparar visualmente diferentes soluções
-- Salvar os gráficos em arquivos para referência futura
 
 # Sumário
 ---
